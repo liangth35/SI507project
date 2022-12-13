@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<p>
+    This app was created in {{semester}} for {{course}}.
+</p>
+<p>
+    Return <a href='/'>home</a>.
+</p>
+<body>
+    <h1>
+        Today is {{month}} {{day}}.
+    </h1>
+    {% if month=="October" and day==31 %}
+    <h2>Happy Halloween!</h2>
+        <img src="https://www.pinclipart.com/picdir/middle/1-15805_free-to-use-pumpkin-clip-art-cute-cartoon.png" width=300/>
+    {% endif %}
+
+    <input name="name" type="text"/>
+</body>
+    
