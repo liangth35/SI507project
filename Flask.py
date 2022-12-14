@@ -3,7 +3,7 @@ import time
 import requests
 import pandas as pd
 import datetime
-
+import json
 class Node:
     def __init__(self, datatuple=None):
         if datatuple is not None:
@@ -65,30 +65,44 @@ def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_date
         res += rangesearch(tree.left, bounds, depth+1)
     return res
 
-nodeList = []
-for a in gameData.items():
-    nodeList.append(Node(a))
-tree = constructTree(nodeList)
+
 
 
 app = Flask(__name__)
 
-sorttype = None
-month="October"
-day=31
+sorttype,priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper = None,None,None,None,None,None,None
+discount=""
 @app.route('/')
-def about():
-    return render_template('index.html', sorttype=sorttype, month=month, day=day)
+def index():
+    return render_template('index.html')
 
-@app.route('/handle', methods=["POST"])
-def handle():
+@app.route('/result', methods=["GET","POST"])
+def result():
     sorttype = request.form["sort"]
-    return render_template('index.html', sorttype=sorttype, month=month, day=day)
+    priceLower = request.form["priceLower"]
+    priceUpper = request.form["priceUpper"]
+    dateLower = request.form["dateLower"]
+    dateUpper = request.form["dateUpper"]
+    ratingLower = request.form["ratingLower"]
+    ratingUpper = request.form["ratingUpper"]
+    try:
+        discount = request.form["discount"]
+    except:
+        discount=""
+    reslist=rangesearch(tree, [[float(priceLower),float(priceUpper)], [pd.to_datetime(dateLower), pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)]])
+    return render_template('result.html',priceLower=priceLower,priceUpper=priceUpper,\
+        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,sorttype=sorttype,discount=discount)
 
 if __name__ == '__main__':  
+    gameFile = open('gameData.json','r')
+    gameData = json.load(gameFile)
+    gameFile.close()
+
+    nodeList = []
+    for a in gameData.items():
+        nodeList.append(Node(a))
+    tree = constructTree(nodeList)
+    
     print('starting Flask app', app.name)
     app.run(host= '127.0.0.1', port=5001, debug=True)
-    reslist=rangesearch(tree, [[10,20], [pd.to_datetime('2022-01-01'), pd.to_datetime('2023-01-01')],[90,100]])
-    for res in reslist:
-        # if res.discPrice>20 or res.discPrice<10 or res.rating<90:
-        res.disp()
+    

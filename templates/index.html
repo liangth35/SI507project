@@ -2,36 +2,33 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Steam game browser</title>
 </head>
-<p>
-    This is the list of games in {{sorttype}} order.
-</p>
-<p>
-    Return <a href='/'>home</a>.
-</p>
+
+
 <body>
     <h1>
-        Today is {{month}} {{day}}.
+        Steam game browser
     </h1>
     <!-- {% if month=="October" and day==31 %}
     <h2>Happy Halloween!</h2>
         <img src="https://www.pinclipart.com/picdir/middle/1-15805_free-to-use-pumpkin-clip-art-cute-cartoon.png" width=300/>
     {% endif %} -->
-    
-    <form action="/handle" method="POST">
-        Enter price range:<br>
-        <label for="priceLower">Price lower bound</label>
+    <p>
+        Choose range and sorting rules.
+    </p>
+    <form action="/result" method="POST">
+        Enter search range:<br>
+        <label for="priceLower">Price: from</label>
         <input type="number" name = priceLower min = "0" max="999" step="0.01" value="0">
-        <label for="priceLower">Price upper bound</label>
+        <label for="priceUpper">to</label>
         <input type="number" name = priceUpper min = "0" max="999" step="0.01" value="999"><br>
-        <label for="priceLower">Released after</label>
+        <label for="priceLower">Released date: from</label>
         <input type="date" name = dateLower value="1970-01-01">
-        <label for="priceLower">Released before</label>
+        <label for="priceUpper">to</label>
         <input type="date" name = dateUpper value="2023-01-01"><br>
-        <label for="ratingLower">Rating lower bound</label>
+        <label for="ratingLower">Rating: from</label>
         <input type="number" name = ratingLower min = "0" max="100" value="0">
-        <label for="ratingLower">Rating upper bound</label>
+        <label for="ratingUpper">to:</label>
         <input type="number" name = ratingUpper min = "0" max="100" value="100"><br>
         <br>
         Choose attribute to order by:<br>
@@ -43,7 +40,15 @@
         <input type="radio" name="sort" value="ratingAscending">Rating Ascending<br>
         <input type="radio" name="sort" value="nosort">No sorting
 		<br>
-		<button type="submit" id="sort">Sort</button>
+        <input type="checkbox" name="discount" value="discount">Select discount<br>
+		<button type="submit" id="sort">Search</button>
 	</form>
+
+    <p>
+        <a href='/'>Reset</a>.
+    </p>
+    <!-- <ul>
+        <li>
+    </ul> -->
 </body>
     
