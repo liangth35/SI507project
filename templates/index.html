@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <p>
-    This app was created in {{semester}} for {{course}}.
+    This is the list of games in {{querytype}} order.
 </p>
 <p>
     Return <a href='/'>home</a>.
@@ -13,7 +13,13 @@
     <h2>Happy Halloween!</h2>
         <img src="https://www.pinclipart.com/picdir/middle/1-15805_free-to-use-pumpkin-clip-art-cute-cartoon.png" width=300/>
     {% endif %}
-
-    <input name="name" type="text"/>
+    <form action="/handle" method="POST">
+        Choose attribute to query:  
+        <input type="radio" name="query" value="price">Price<br/>
+        <input type="radio" name="query" value="date">Date<br/>
+        <input type="radio" name="query" value="rating">Rating<br/>
+		<br>
+		<button type="submit" id="query">Query</button>
+	</form>
 </body>
     

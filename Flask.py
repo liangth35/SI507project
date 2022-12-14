@@ -1,15 +1,19 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import time
 app = Flask(__name__)
 
-course = 'SI 507'
-semester = 'Fall 2020'
+querytype = None
 month="October"
 day=31
 @app.route('/')
 def about():
-    return render_template('index.html',course=course, semester=semester, month=month, day=day)
+    return render_template('index.html', querytype=querytype, month=month, day=day)
+
+@app.route('/handle', methods=["POST"])
+def handle():
+    querytype = request.form["query"]
+    return render_template('index.html', querytype=querytype, month=month, day=day)
 
 if __name__ == '__main__':  
-    print('starting Flask app', app.name)  
+    print('starting Flask app', app.name)
     app.run(host= '127.0.0.1', port=5001, debug=True)
