@@ -1,6 +1,11 @@
 <!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Steam game browser</title>
+</head>
 <p>
-    This is the list of games in {{querytype}} order.
+    This is the list of games in {{sorttype}} order.
 </p>
 <p>
     Return <a href='/'>home</a>.
@@ -9,17 +14,36 @@
     <h1>
         Today is {{month}} {{day}}.
     </h1>
-    {% if month=="October" and day==31 %}
+    <!-- {% if month=="October" and day==31 %}
     <h2>Happy Halloween!</h2>
         <img src="https://www.pinclipart.com/picdir/middle/1-15805_free-to-use-pumpkin-clip-art-cute-cartoon.png" width=300/>
-    {% endif %}
+    {% endif %} -->
+    
     <form action="/handle" method="POST">
-        Choose attribute to query:  
-        <input type="radio" name="query" value="price">Price<br/>
-        <input type="radio" name="query" value="date">Date<br/>
-        <input type="radio" name="query" value="rating">Rating<br/>
+        Enter price range:<br>
+        <label for="priceLower">Price lower bound</label>
+        <input type="number" name = priceLower min = "0" max="999" step="0.01" value="0">
+        <label for="priceLower">Price upper bound</label>
+        <input type="number" name = priceUpper min = "0" max="999" step="0.01" value="999"><br>
+        <label for="priceLower">Released after</label>
+        <input type="date" name = dateLower value="1970-01-01">
+        <label for="priceLower">Released before</label>
+        <input type="date" name = dateUpper value="2023-01-01"><br>
+        <label for="ratingLower">Rating lower bound</label>
+        <input type="number" name = ratingLower min = "0" max="100" value="0">
+        <label for="ratingLower">Rating upper bound</label>
+        <input type="number" name = ratingUpper min = "0" max="100" value="100"><br>
+        <br>
+        Choose attribute to order by:<br>
+        <input type="radio" name="sort" value="priceDescending" required="required">Price Descending
+        <input type="radio" name="sort" value="dateDescending">Date Descending
+        <input type="radio" name="sort" value="ratingDescending">Rating Descending<br>
+        <input type="radio" name="sort" value="priceAscending">Price Ascending
+        <input type="radio" name="sort" value="dateAscending">Date Ascending
+        <input type="radio" name="sort" value="ratingAscending">Rating Ascending<br>
+        <input type="radio" name="sort" value="nosort">No sorting
 		<br>
-		<button type="submit" id="query">Query</button>
+		<button type="submit" id="sort">Sort</button>
 	</form>
 </body>
     
