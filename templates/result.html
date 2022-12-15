@@ -9,6 +9,7 @@
         border-collapse: collapse;
         text-align: center;
     }
+
     .deleted {
         text-decoration: line-through;
     }
@@ -38,8 +39,18 @@
         and review number between {{reviewLower}} and {{reviewUpper}} in {{sorttype}} order.
     </p>
     <p>
-        <a href='/'>Return</a>.
+        <a href='/'>Home</a>
     </p>
+    <form action="/plot" method="POST">
+        <select name="plotvariable1" required="True">
+            <option value="price">Price</option>
+            <option value="date">Date</option>
+            <option value="rating">Rating</option>
+            <option value="review">Review</option>
+        </select>
+        <button type="submit" id="plot">Plot</button>
+    </form>
+    
     <table>
         <th>Name</th><th>Price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th><th>Link</th><th class="desc">Description</th>
         {% for row in reslist %}

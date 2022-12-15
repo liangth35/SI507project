@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import datetime
 import json
+import plotly.express as px
 class Node:
     def __init__(self, datatuple=None):
         if datatuple is not None:
@@ -74,13 +75,14 @@ def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_date
     return res
 
 app = Flask(__name__)
-
+reslist=[]
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/result', methods=["POST"])
 def result():
+    global sorttype,priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist
     sorttype = request.form["sort"]
     priceLower = request.form["priceLower"]
     priceUpper = request.form["priceUpper"]
@@ -118,6 +120,19 @@ def result():
         dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
         reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
 
+@app.route('/plot', methods=["POST"])
+def plot():
+    plotvariable1 = request.form["plotvariable1"]
+    fig=px.histogram(x=[b.rating for b in reslist])
+    div=fig.to_html(full_html=False)
+    return render_template('plot.html', div=div)
+
+@app.route('/plotreturn', methods=["POST"])
+def plotreturn():
+    return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
+    dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
+    reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
+
 if __name__ == '__main__':
     gameFile = open('gameData.json','r')
     gameData = json.load(gameFile)
@@ -127,6 +142,12 @@ if __name__ == '__main__':
     for a in gameData.items():
         nodeList.append(Node(a))
     tree = constructTree(nodeList)
+
+    # fig=px.scatter(x=[a.date for a in nodeList], y=[b.discPrice for b in nodeList])
+    # 
+    # fig=px.line(x=[a.date.year for a in nodeList], y=[b.rating for b in nodeList])
+    # fig.show()
+
 
     app.run(host= '127.0.0.1', port=5001, debug=True)
     
