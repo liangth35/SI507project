@@ -9,6 +9,23 @@
         border-collapse: collapse;
         text-align: center;
     }
+    .deleted {
+        text-decoration: line-through;
+    }
+    .green {
+        color: green;
+    }
+    .red {
+        color: red;
+    }
+    .blue {
+        color: blue;
+    }
+    @media screen and (max-width: 1080px) {
+        .desc {
+            display: none;
+        }
+    }
 </style>
 <body>
     <h1>
@@ -24,10 +41,25 @@
         <a href='/'>Return</a>.
     </p>
     <table>
-        <th>Name</th><th>Price</th><th>Original price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th>
+        <th>Name</th><th>Price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th><th>Link</th><th class="desc">Description</th>
         {% for row in reslist %}
         <tr>
-            <td>{{row.name}}</td><td>{{row.discPrice}}</td><td>{{row.oriPrice}}</td><td>{{row.date.date()}}</td><td>{{row.rating}}</td><td>{{row.reviews}}</td>
+            <td>{{row.name}}</td>
+            {% if row.discPrice < row.oriPrice %}
+            <td><div class="green">{{row.discPrice}}</div><div class="deleted">{{row.oriPrice}}</div></td>
+            {% else %}<td>{{row.oriPrice}}</td>
+            {% endif %}
+            <td>{{row.date.date()}}</td>
+            {% if row.rating > 90 %}
+            <td class="blue">{{row.rating}}</td>
+            {% elif row.rating < 60 %}
+            <td class="red">{{row.rating}}</td>
+            {% else %}
+            <td>{{row.rating}}</td>
+            {% endif %}
+            <td>{{row.reviews}}</td>
+            <td><a href="{{row.link}}">link</a></td>
+            <td class="desc">{{row.desc}}</td>
         </tr>
         {% endfor %}
     </table>
