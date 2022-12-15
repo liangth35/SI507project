@@ -65,18 +65,13 @@ def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_date
         res += rangesearch(tree.left, bounds, depth+1)
     return res
 
-
-
-
 app = Flask(__name__)
 
-sorttype,priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper = None,None,None,None,None,None,None
-discount=""
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/result', methods=["GET","POST"])
+@app.route('/result', methods=["POST"])
 def result():
     sorttype = request.form["sort"]
     priceLower = request.form["priceLower"]
@@ -90,10 +85,24 @@ def result():
     except:
         discount=""
     reslist=rangesearch(tree, [[float(priceLower),float(priceUpper)], [pd.to_datetime(dateLower), pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)]])
+    if sorttype=="priceDescending":
+        reslist.sort(key = lambda x: x.discPrice, reverse=True)
+    elif sorttype=="priceAscending":
+        reslist.sort(key = lambda x: x.discPrice)
+    elif sorttype=="dateDescending":
+        reslist.sort(key = lambda x: x.date, reverse=True)
+    elif sorttype=="dateAscending":
+        reslist.sort(key = lambda x: x.date)
+    elif sorttype=="ratingDescending":
+        reslist.sort(key = lambda x: x.rating, reverse=True)
+    elif sorttype=="ratingAscending":
+        reslist.sort(key = lambda x: x.rating)
+    if discount=="discount":
+        reslist=filter(lambda x: x.discPrice < x.oriPrice, reslist)
     return render_template('result.html',priceLower=priceLower,priceUpper=priceUpper,\
-        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,sorttype=sorttype,discount=discount)
+        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,sorttype=sorttype,discount=discount, reslist=reslist)
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
     gameFile = open('gameData.json','r')
     gameData = json.load(gameFile)
     gameFile.close()

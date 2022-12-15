@@ -3,15 +3,17 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
+<style>
+    table,td,th {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+    }
+</style>
 <body>
     <h1>
-        Steam game browser
+        Range search result
     </h1>
-    <!-- {% if month=="October" and day==31 %}
-    <h2>Happy Halloween!</h2>
-        <img src="https://www.pinclipart.com/picdir/middle/1-15805_free-to-use-pumpkin-clip-art-cute-cartoon.png" width=300/>
-    {% endif %} -->
 
     <p>
         This is the list of {{discount}} games with price between {{priceLower}} and {{priceUpper}},
@@ -21,8 +23,13 @@
     <p>
         <a href='/'>Return</a>.
     </p>
-    <!-- <ul>
-        <li>
-    </ul> -->
+    <table>
+        <th>Id</th><th>Name</th><th>Price</th><th>Original price</th><th>Release date</th><th>Rating(%)</th>
+        {% for row in reslist %}
+        <tr>
+            <td>{{row.id}}</td><td>{{row.name}}</td><td>{{row.discPrice}}</td><td>{{row.oriPrice}}</td><td>{{row.date.date()}}</td><td>{{row.rating}}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
     
