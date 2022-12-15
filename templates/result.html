@@ -68,10 +68,10 @@
     </form>
     
     <table>
-        <th>Name</th><th>Price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th><th>Link</th><th class="desc">Description</th>
+        <th>Name</th><th>Price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th><th class="desc">Description</th>
         {% for row in reslist %}
         <tr>
-            <td>{{row.name}}</td>
+            <td><a href={{row.link}}>{{row.name}}</a></td>
             {% if row.discPrice < row.oriPrice %}
             <td><div class="green">{{row.discPrice}}</div><div class="deleted">{{row.oriPrice}}</div></td>
             {% else %}<td>{{row.oriPrice}}</td>
@@ -85,7 +85,6 @@
             <td>{{row.rating}}</td>
             {% endif %}
             <td>{{row.reviews}}</td>
-            <td><a href="{{row.link}}">link</a></td>
             <td class="desc">{{row.desc}}</td>
         </tr>
         {% endfor %}
