@@ -82,8 +82,7 @@ def index():
 
 @app.route('/result', methods=["POST"])
 def result():
-    global sorttype,priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist
-    sorttype = request.form["sort"]
+    global priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist,sorttype
     priceLower = request.form["priceLower"]
     priceUpper = request.form["priceUpper"]
     dateLower = request.form["dateLower"]
@@ -92,12 +91,24 @@ def result():
     ratingUpper = request.form["ratingUpper"]
     reviewLower = request.form["reviewLower"]
     reviewUpper = request.form["reviewUpper"]
+    sorttype=None
     try:
         discount = request.form["discount"]
     except:
         discount=""
     reslist=rangesearch(tree, [[float(priceLower),float(priceUpper)], [pd.to_datetime(dateLower), \
         pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)],[int(reviewLower),int(reviewUpper)]])
+    
+    if discount=="discounted":
+        reslist=list(filter(lambda x: x.discPrice < x.oriPrice, reslist))
+    return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
+        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
+        reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
+
+@app.route('/sortresult', methods=["POST"])
+def sortresult():
+    global priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist,sorttype
+    sorttype = request.form["sort"]
     if sorttype=="priceDescending":
         reslist.sort(key = lambda x: x.discPrice, reverse=True)
     elif sorttype=="priceAscending":
@@ -114,18 +125,23 @@ def result():
         reslist.sort(key = lambda x: x.reviews, reverse=True)
     elif sorttype=="reviewAscending":
         reslist.sort(key = lambda x: x.reviews)
-    if discount=="discounted":
-        reslist=list(filter(lambda x: x.discPrice < x.oriPrice, reslist))
     return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
         dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
         reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
-
+    
 @app.route('/plot', methods=["POST"])
 def plot():
     plotvariable1 = request.form["plotvariable1"]
-    fig=px.histogram(x=[b.rating for b in reslist])
+    if plotvariable1=="price":
+        fig=px.histogram(x=[b.discPrice for b in reslist])
+    elif plotvariable1=="date":
+        fig=px.histogram(x=[b.date for b in reslist])
+    elif plotvariable1=="rating":
+        fig=px.histogram(x=[b.rating for b in reslist])
+    elif plotvariable1=="review":
+        fig=px.histogram(x=[b.reviews for b in reslist])
     div=fig.to_html(full_html=False)
-    return render_template('plot.html', div=div)
+    return render_template('plot.html', div=div, plotname=plotvariable1)
 
 @app.route('/plotreturn', methods=["POST"])
 def plotreturn():
@@ -142,12 +158,6 @@ if __name__ == '__main__':
     for a in gameData.items():
         nodeList.append(Node(a))
     tree = constructTree(nodeList)
-
-    # fig=px.scatter(x=[a.date for a in nodeList], y=[b.discPrice for b in nodeList])
-    # 
-    # fig=px.line(x=[a.date.year for a in nodeList], y=[b.rating for b in nodeList])
-    # fig.show()
-
 
     app.run(host= '127.0.0.1', port=5001, debug=True)
     

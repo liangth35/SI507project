@@ -5,15 +5,14 @@
 </head>
 <body>
     <h1>
-        Plot
+        Distribution of {{plotname}}
     </h1>
     <p>
+        <a href='/'>Home</a>
+        <br>
         <form action="/plotreturn" method="POST">
             <button type="submit" id="plotreturn">Return</button>
         </form>
-        <br>
-        <a href='/'>Home</a>
     </p>
-    Figure shown below: 
     {{div | safe}}
 </body>

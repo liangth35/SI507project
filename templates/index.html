@@ -28,22 +28,9 @@
         <label for="reviewUpper">to:</label>
         <input type="number" name = reviewUpper min = "0" max="9999999" value="9999999"><br>
         <br>
-        Sort by:<br>
-        <select name="sort" required="True">
-            <option value="nosort">None</option>
-            <option value="priceDescending">Price Descending</option>
-            <option value="priceAscending">Price Ascending</option>
-            <option value="dateDescending">Date Descending</option>
-            <option value="dateAscending">Date Ascending</option>
-            <option value="ratingDescending">Rating Descending</option>
-            <option value="ratingAscending">Rating Ascending</option>
-            <option value="reviewDescending">Review Descending</option>
-            <option value="reviewAscending">Review Ascending</option>
-        </select>
-		<br>
         <input type="checkbox" name="discount" value="discounted">Specials offers only<br>
         <br>
-		<button type="submit" id="sort">Search</button>
+		<button type="submit" id="search">Search</button>
 	</form>
     <p>
         <a href='/'>Reset</a>

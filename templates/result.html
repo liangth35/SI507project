@@ -41,7 +41,23 @@
     <p>
         <a href='/'>Home</a>
     </p>
+    <form action="/sortresult" method="POST">
+    Sort by:<br>
+        <select name="sort" required="True">
+            <option value="nosort">None</option>
+            <option value="priceDescending">Price Descending</option>
+            <option value="priceAscending">Price Ascending</option>
+            <option value="dateDescending">Date Descending</option>
+            <option value="dateAscending">Date Ascending</option>
+            <option value="ratingDescending">Rating Descending</option>
+            <option value="ratingAscending">Rating Ascending</option>
+            <option value="reviewDescending">Review Descending</option>
+            <option value="reviewAscending">Review Ascending</option>
+        </select>
+        <button type="submit" id="sort">Sort</button>
+    </form>
     <form action="/plot" method="POST">
+        Plot distribution of:<br>
         <select name="plotvariable1" required="True">
             <option value="price">Price</option>
             <option value="date">Date</option>
@@ -61,7 +77,7 @@
             {% else %}<td>{{row.oriPrice}}</td>
             {% endif %}
             <td>{{row.date.date()}}</td>
-            {% if row.rating > 90 %}
+            {% if row.rating >= 90 %}
             <td class="blue">{{row.rating}}</td>
             {% elif row.rating < 60 %}
             <td class="red">{{row.rating}}</td>
