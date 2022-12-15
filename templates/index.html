@@ -9,9 +9,6 @@
     <h1>
         Steam game browser
     </h1>
-    <p>
-        Choose range and sorting rules.
-    </p>
     <form action="/result" method="POST">
         Enter search range:<br>
         <label for="priceLower">Price: from</label>
@@ -21,22 +18,31 @@
         <label for="priceLower">Released date: from</label>
         <input type="date" name = dateLower value="1970-01-01">
         <label for="priceUpper">to</label>
-        <input type="date" name = dateUpper value="2023-01-01"><br>
+        <input type="date" name = dateUpper value="2024-01-01"><br>
         <label for="ratingLower">Rating: from</label>
         <input type="number" name = ratingLower min = "0" max="100" value="0">
         <label for="ratingUpper">to:</label>
         <input type="number" name = ratingUpper min = "0" max="100" value="100"><br>
+        <label for="reviewLower">Review count: from</label>
+        <input type="number" name = reviewLower min = "0" max="9999999" value="0">
+        <label for="reviewUpper">to:</label>
+        <input type="number" name = reviewUpper min = "0" max="9999999" value="9999999"><br>
         <br>
-        Order by:<br>
-        <input type="radio" name="sort" value="priceDescending" required="required">Price Descending
-        <input type="radio" name="sort" value="dateDescending">Date Descending
-        <input type="radio" name="sort" value="ratingDescending">Rating Descending<br>
-        <input type="radio" name="sort" value="priceAscending">Price Ascending
-        <input type="radio" name="sort" value="dateAscending">Date Ascending
-        <input type="radio" name="sort" value="ratingAscending">Rating Ascending<br>
-        <input type="radio" name="sort" value="nosort">None
+        Sort by:<br>
+        <select name="sort" required="True">
+            <option value="nosort">None</option>
+            <option value="priceDescending">Price Descending</option>
+            <option value="priceAscending">Price Ascending</option>
+            <option value="dateDescending">Date Descending</option>
+            <option value="dateAscending">Date Ascending</option>
+            <option value="ratingDescending">Rating Descending</option>
+            <option value="ratingAscending">Rating Ascending</option>
+            <option value="reviewDescending">Review Descending</option>
+            <option value="reviewAscending">Review Ascending</option>
+        </select>
 		<br>
-        <input type="checkbox" name="discount" value="discount">Select discount<br>
+        <input type="checkbox" name="discount" value="discounted">Specials offers only<br>
+        <br>
 		<button type="submit" id="sort">Search</button>
 	</form>
     <p>

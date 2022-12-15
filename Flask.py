@@ -11,7 +11,7 @@ class Node:
             self.name = datatuple[1][0]
             self.date = pd.to_datetime(datatuple[1][1])
             if self.date is None:
-                self.date = pd.to_datetime('2077-01-01')
+                self.date = pd.to_datetime('2024-01-01')
             self.oriPrice = datatuple[1][2]
             self.discPrice = datatuple[1][3]
             self.rating = datatuple[1][4]
@@ -20,7 +20,7 @@ class Node:
             self.reviews = datatuple[1][5]
             self.link = datatuple[1][6]
             self.desc = datatuple[1][7]
-            self.indices = [self.discPrice, self.date, self.rating]
+            self.indices = [self.discPrice, self.date, self.rating, self.reviews]
         self.left = None
         self.right = None
 
@@ -33,6 +33,14 @@ class Node:
         self.disp()
         if self.right:
             self.right.dispTree()
+    def countnum(self):
+        cnt=0
+        if self.left:
+            cnt+=self.left.countnum()
+        cnt+=1
+        if self.right:
+            cnt+=self.right.countnum()
+        return cnt
     
 def constructTree(nodeList, depth=0):
     try:
@@ -46,7 +54,7 @@ def constructTree(nodeList, depth=0):
     medianNode.right = constructTree(nodeList[median+1:], depth+1)
     return medianNode
 
-def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_datetime('2023-01-01')], [0,100]], depth=0):
+def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_datetime('2024-01-01')], [0,100], [0,9999999]], depth=0):
     res = []
     try:
         axis = depth % len(tree.indices)
@@ -54,14 +62,14 @@ def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_date
         return res
     if tree.indices[0]>=bounds[0][0] and tree.indices[0]<=bounds[0][1] \
     and tree.indices[1]>=bounds[1][0] and tree.indices[1]<=bounds[1][1]\
-    and tree.indices[2]>=bounds[2][0] and tree.indices[2]<=bounds[2][1]:
+    and tree.indices[2]>=bounds[2][0] and tree.indices[2]<=bounds[2][1]\
+    and tree.indices[3]>=bounds[3][0] and tree.indices[3]<=bounds[3][1]:
         res.append(tree)
-        # res[0].desc=[lowerBound[axis],upperBound[axis]]
         if tree.left is None and tree.right is None:
             return res
-    if tree.indices[axis]<bounds[axis][1]:
+    if tree.indices[axis]<=bounds[axis][1]:
         res += rangesearch(tree.right, bounds, depth+1)
-    if tree.indices[axis]>bounds[axis][0]:
+    if tree.indices[axis]>=bounds[axis][0]:
         res += rangesearch(tree.left, bounds, depth+1)
     return res
 
@@ -80,11 +88,14 @@ def result():
     dateUpper = request.form["dateUpper"]
     ratingLower = request.form["ratingLower"]
     ratingUpper = request.form["ratingUpper"]
+    reviewLower = request.form["reviewLower"]
+    reviewUpper = request.form["reviewUpper"]
     try:
         discount = request.form["discount"]
     except:
         discount=""
-    reslist=rangesearch(tree, [[float(priceLower),float(priceUpper)], [pd.to_datetime(dateLower), pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)]])
+    reslist=rangesearch(tree, [[float(priceLower),float(priceUpper)], [pd.to_datetime(dateLower), \
+        pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)],[int(reviewLower),int(reviewUpper)]])
     if sorttype=="priceDescending":
         reslist.sort(key = lambda x: x.discPrice, reverse=True)
     elif sorttype=="priceAscending":
@@ -97,10 +108,15 @@ def result():
         reslist.sort(key = lambda x: x.rating, reverse=True)
     elif sorttype=="ratingAscending":
         reslist.sort(key = lambda x: x.rating)
-    if discount=="discount":
-        reslist=filter(lambda x: x.discPrice < x.oriPrice, reslist)
-    return render_template('result.html',priceLower=priceLower,priceUpper=priceUpper,\
-        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,sorttype=sorttype,discount=discount, reslist=reslist)
+    elif sorttype=="reviewDescending":
+        reslist.sort(key = lambda x: x.reviews, reverse=True)
+    elif sorttype=="reviewAscending":
+        reslist.sort(key = lambda x: x.reviews)
+    if discount=="discounted":
+        reslist=list(filter(lambda x: x.discPrice < x.oriPrice, reslist))
+    return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
+        dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
+        reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
 
 if __name__ == '__main__':
     gameFile = open('gameData.json','r')
@@ -111,7 +127,6 @@ if __name__ == '__main__':
     for a in gameData.items():
         nodeList.append(Node(a))
     tree = constructTree(nodeList)
-    
-    print('starting Flask app', app.name)
+
     app.run(host= '127.0.0.1', port=5001, debug=True)
     

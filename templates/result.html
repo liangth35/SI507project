@@ -16,18 +16,18 @@
     </h1>
 
     <p>
-        This is the list of {{discount}} games with price between {{priceLower}} and {{priceUpper}},
-        release date between {{dateLower}} and {{dateUpper}}, and 
-        rating between {{ratingLower}} and {{ratingUpper}} in {{sorttype}} order.
+        The search returns {{num}} {{discount}} games with price between {{priceLower}} and {{priceUpper}},
+        release date between {{dateLower}} and {{dateUpper}}, rating between {{ratingLower}} and {{ratingUpper}}, 
+        and review number between {{reviewLower}} and {{reviewUpper}} in {{sorttype}} order.
     </p>
     <p>
         <a href='/'>Return</a>.
     </p>
     <table>
-        <th>Id</th><th>Name</th><th>Price</th><th>Original price</th><th>Release date</th><th>Rating(%)</th>
+        <th>Name</th><th>Price</th><th>Original price</th><th>Release date</th><th>Rating(%)</th><th>Reviews</th>
         {% for row in reslist %}
         <tr>
-            <td>{{row.id}}</td><td>{{row.name}}</td><td>{{row.discPrice}}</td><td>{{row.oriPrice}}</td><td>{{row.date.date()}}</td><td>{{row.rating}}</td>
+            <td>{{row.name}}</td><td>{{row.discPrice}}</td><td>{{row.oriPrice}}</td><td>{{row.date.date()}}</td><td>{{row.rating}}</td><td>{{row.reviews}}</td>
         </tr>
         {% endfor %}
     </table>
