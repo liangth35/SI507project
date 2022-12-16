@@ -24,16 +24,16 @@ class Node:
         self.left = None
         self.right = None
 
-    def disp(self):
+    def disp(self): #print node
         print(self.id,self.name,self.date,self.oriPrice,self.discPrice,self.rating,self.reviews,self.link,self.desc)
     
-    def dispTree(self):
+    def dispTree(self): #print tree
         if self.left:
             self.left.dispTree()
         self.disp()
         if self.right:
             self.right.dispTree()
-    def countnum(self):
+    def countnum(self): #count number of nodes in tree
         cnt=0
         if self.left:
             cnt+=self.left.countnum()
@@ -42,7 +42,7 @@ class Node:
             cnt+=self.right.countnum()
         return cnt
     
-def constructTree(nodeList, depth=0):
+def constructTree(nodeList, depth=0): #recursively construct a kd-tree and return the root node
     try:
         axis = depth % len(nodeList[0].indices)
     except: #list empty
@@ -63,25 +63,25 @@ def rangesearch(tree, bounds=[[0,999], [pd.to_datetime('1970-01-01'), pd.to_date
     if tree.indices[0]>=bounds[0][0] and tree.indices[0]<=bounds[0][1] \
     and tree.indices[1]>=bounds[1][0] and tree.indices[1]<=bounds[1][1]\
     and tree.indices[2]>=bounds[2][0] and tree.indices[2]<=bounds[2][1]\
-    and tree.indices[3]>=bounds[3][0] and tree.indices[3]<=bounds[3][1]:
+    and tree.indices[3]>=bounds[3][0] and tree.indices[3]<=bounds[3][1]: #node found
         res.append(tree)
         if tree.left is None and tree.right is None:
             return res
-    if tree.indices[axis]<=bounds[axis][1]:
+    if tree.indices[axis]<=bounds[axis][1]: #pruning
         res += rangesearch(tree.right, bounds, depth+1)
-    if tree.indices[axis]>=bounds[axis][0]:
+    if tree.indices[axis]>=bounds[axis][0]: #pruning
         res += rangesearch(tree.left, bounds, depth+1)
     return res
 
 app = Flask(__name__)
 reslist=[]
-@app.route('/')
+@app.route('/') #home page
 def index():
     return render_template('index.html')
 
-@app.route('/result', methods=["POST"])
+@app.route('/result', methods=["POST"]) #range search result page
 def result():
-    global priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist,sorttype
+    global priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist,sorttype #save search result
     priceLower = request.form["priceLower"]
     priceUpper = request.form["priceUpper"]
     dateLower = request.form["dateLower"]
@@ -99,12 +99,12 @@ def result():
         pd.to_datetime(dateUpper)],[int(ratingLower),int(ratingUpper)],[int(reviewLower),int(reviewUpper)]])
     
     if discount=="discounted":
-        reslist=list(filter(lambda x: x.discPrice < x.oriPrice, reslist))
+        reslist=list(filter(lambda x: x.discPrice < x.oriPrice, reslist)) #select only discounted games
     return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
         dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
         reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
 
-@app.route('/sortresult', methods=["POST"])
+@app.route('/sortresult', methods=["POST"]) #sorting result page
 def sortresult():
     global priceLower,priceUpper,dateLower,dateUpper,ratingLower,ratingUpper,reviewLower,reviewUpper,discount,reslist,sorttype
     sorttype = request.form["sort"]
@@ -128,7 +128,7 @@ def sortresult():
         dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
         reviewLower=reviewLower, reviewUpper=reviewUpper, sorttype=sorttype,discount=discount, reslist=reslist)
     
-@app.route('/plot', methods=["POST"])
+@app.route('/plot', methods=["POST"]) #plot page
 def plot():
     plotvariable1 = request.form["plotvariable1"]
     if plotvariable1=="price":
@@ -142,7 +142,7 @@ def plot():
     div=fig.to_html(full_html=False)
     return render_template('plot.html', div=div, plotname=plotvariable1)
 
-@app.route('/plotreturn', methods=["POST"])
+@app.route('/plotreturn', methods=["POST"]) #range search result page (returning from plot page)
 def plotreturn():
     return render_template('result.html', num=len(reslist), priceLower=priceLower,priceUpper=priceUpper,\
     dateLower=dateLower,dateUpper=dateUpper,ratingLower=ratingLower,ratingUpper=ratingUpper,\
