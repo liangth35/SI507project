@@ -158,5 +158,10 @@ if __name__ == '__main__':
         nodeList.append(Node(a))
     tree = constructTree(nodeList)
 
+    # print(tree.countnum(), tree.left.countnum(),tree.right.countnum())
+    # tree.disp()
+    # tree.left.disp()
+    # tree.right.disp()
+    
     app.run(host= '127.0.0.1', port=5001, debug=True)
     
